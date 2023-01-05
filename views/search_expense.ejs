@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Get Bootstrap CSS CDN from https://getbootstrap.com/docs/5.2/getting-started/introduction/ -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <!-- Get Bootstrap icons CDN from https://icons.getbootstrap.com/#install -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css">
+    <!-- Custom CSS with Sass Compiling ( requires npm install bootstrap & VSCode Extension Live Sass Compiler ) -->
+     <link rel="stylesheet" href="/css/main.min.css">
+    <!-- My Custom Reports CSS -->
+    <link rel="stylesheet" href="/css/reports.css">
+    <script defer href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Modify Expense Reports</title>
+</head>
+<body>
+
+    <%- include('./partials/navbar') %>
+
+    <!-- title -->
+    <section>
+        <div class="container-lg border rounded-border ps-3 pe-3 bg-altbrown">
+            <div class="row justify-content-start align-items-center">
+                <div class="col-md-10">
+                    <div class="lead text-white fw-bold">MODIFY EXPENSE REPORTS</div>
+                </div>
+                <!-- 
+                <div class="col-md-2 d-none d-md-block">
+                    <img class="img-fluid" src="/images/power_web.jpg" alt="logo">
+                </div> -->
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </section>
+
+    <section>
+        <div class="container-lg mt-0 mb-0 ps-0 pe-0">
+            <div class="row justify-content-start align-items-center">
+                <div class="col">    
+                    <!-- error messages if any -->
+                    <%- include('./partials/messages') %>
+                </div>
+            </div>
+        </div>
+    </section>
+ 
+    <!-- show a list of all expenses in table -->
+    <section>
+        <div class="container-md mt-0 mb-0 ps-0 pe-0">
+            <div class="row justify-content-start align-items-center">
+                <div class="col-md-10">    
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+
+                            <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Employee Name</th>
+                                <th scope="col">Badge #</th>
+                                <th scope="col">Total Expenses</th>
+                                <th scope="col">Company Paid</th>
+                                <th scope="col">Due Employee</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <!-- the formatter is passed from the router -->
+                            <% allExp.forEach((value, index)=>{ %>
+                            <tr>
+                                <th scope="row"><%=index+1%></th>
+                                <td><%=value.employee_name%></td>
+                                <td><%=value.badge%></td>
+                                <td class="text-end"><%=formatter.format(value.total_expenses)%></td>
+                                <td class="text-end"><%=formatter.format(value.company_paid)%></td>
+                                <td class="text-end"><%=formatter.format(value.due_employee)%></td>
+                                <td class="text-end">
+                                    <button type="button btn-light" id="pencil" data-doc="<%=value._id%>" class="btn btn-sm"> 
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                   </button>
+                                </td>
+                                <td class="text-end">
+                                    <button type="button btn-light" id="trashcan" data-doc="<%=value._id%>" class="btn btn-sm"> 
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <% }); %>
+                            </tbody>
+                          </table>
+                    </div>
+
+                    <% if (!allExp.length){ %>
+                    <div class="text-danger text-center px-3 lead">No Expense Reports</div>
+                    <% } %>
+              
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- FORM -->
+    <form action="/modify/update_expense?_method=PUT" method="POST">
+  
+    <section>
+        <div class="container-lg border rounded-border">
+            <div class="row justify-content-start align-items-center">
+
+                <div class="col-md-8">
+                    <label for="name" class="form-label lead mb-0 text-black fw-bold">
+                        EMPLOYEE NAME
+                    </label>
+                    <input type="text" id="employee_name" name="employee_name" class="form-control" 
+                           value="<%= typeof employee_name != 'undefined' ? employee_name : '' %>">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="er" class="form-label lead mb-0 text-black fw-bold">
+                        BADGE #
+                    </label>
+                    <input type="text" id="badge" name="badge" class="form-control" 
+                           value="<%= typeof badge != 'undefined' ? badge : '' %>">
+                </div>
+            
+                <div class="col-md-1" hidden>
+                    <label for="er" class="form-label lead mb-0 text-black fw-bold">
+                        
+                    </label>
+                    <input type="text" id="_id" name="_id" class="form-control" 
+                           value="<%= typeof _id != 'undefined' ? _id : '' %>">
+                </div>
+
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </section>
+
+
+    <!-- dates and locations -->
+    <section>
+        <div class="container-lg border rounded-border">
+
+            <div class="lead text-black fw-bold">DATES & LOCATIONS</div>
+  
+            <div class="row justify-content-start align-items-center mt-0">
+
+                <div class="col-lg-1">
+                    <label for="sun" class="form-label mb-0">SUN</label>
+                    <input type="text" id="sun_date" name="sun_date" class="form-control mb-1" 
+                           value="<%= typeof sun_date != 'undefined' ? sun_date : '' %>">
+                    <input type="text" id="sun_location" name="sun_location" class="form-control" 
+                           value="<%= typeof sun_location != 'undefined' ? sun_location : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="mon" class="form-label mb-0">MON</label>
+                    <input type="text" id="mon_date" name="mon_date" class="form-control mb-1" 
+                           value="<%= typeof mon_date != 'undefined' ? mon_date : '' %>">
+                    <input type="text" id="mon_location" name="mon_location" class="form-control" 
+                           value="<%= typeof mon_location != 'undefined' ? mon_location : '' %>">
+                </div>
+                
+                <div class="col-lg-2">
+                    <label for="tue" class="form-label mb-0">TUE</label>
+                    <input type="text" id="tue_date" name="tue_date" class="form-control mb-1" 
+                           value="<%= typeof tue_date != 'undefined' ? tue_date : '' %>">
+                    <input type="text" id="tue_location" name="tue_location" class="form-control" 
+                           value="<%= typeof tue_location != 'undefined' ? tue_location : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="wed" class="form-label mb-0">WED</label>
+                    <input type="text" id="wed_date" name="wed_date" class="form-control mb-1" 
+                           value="<%= typeof wed_date != 'undefined' ? wed_date : '' %>">
+                    <input type="text" id="wed_location" name="wed_location" class="form-control" 
+                           value="<%= typeof wed_location != 'undefined' ? wed_location : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="thu" class="form-label mb-0">THU</label>
+                    <input type="text" id="thu_date" name="thu_date" class="form-control mb-1" 
+                           value="<%= typeof thu_date != 'undefined' ? thu_date : '' %>">
+                    <input type="text" id="thu_location" name="thu_location" class="form-control" 
+                           value="<%= typeof thu_location != 'undefined' ? thu_location : '' %>">
+                </div>
+                
+                <div class="col-lg-2">
+                    <label for="fri" class="form-label mb-0">FRI</label>
+                    <input type="text" id="fri_date" name="fri_date" class="form-control mb-1" 
+                           value="<%= typeof fri_date != 'undefined' ? fri_date : '' %>">
+                    <input type="text" id="fri_location" name="fri_location" class="form-control" 
+                           value="<%= typeof fri_location != 'undefined' ? fri_location : '' %>">
+                </div>      
+               
+                <div class="col-lg-1">
+                    <label for="sat" class="form-label mb-0">SAT</label>
+                    <input type="text" id="sat_date" name="sat_date" class="form-control mb-1" 
+                           value="<%= typeof sat_date != 'undefined' ? sat_date : '' %>">
+                    <input type="text" id="sat_location" name="sat_location" class="form-control" 
+                           value="<%= typeof sat_location != 'undefined' ? sat_location : '' %>">
+                </div> 
+
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </section>
+
+
+    <!-- employee-paid expenses -->
+    <section>
+        <div class="container-lg border rounded-border">
+
+            <div class="lead text-black fw-bold">EMPLOYEE-PAID EXPENSES</div>
+
+            <!-- Row: -->
+            <div class="row justify-content-start align-items-center mt-1">
+
+                <!-- Col: -->
+                <div class="col-lg-3">
+                <div>&nbsp;</div>
+                    <label for="expense" class="form-label">
+                        <i class="bi bi-reception-4"></i>
+                        PHONE
+                    </label>
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sun" class="form-label mb-0">SUN</label>
+                    <input type="text" class="form-control" id="ee_phone_sun" name="ee_phone_sun" 
+                           value="<%= typeof ee_phone_sun != 'undefined' ? ee_phone_sun : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="mon" class="form-label mb-0">MON</label>
+                    <input type="text" class="form-control" id="ee_phone_mon" name="ee_phone_mon" 
+                           value="<%= typeof ee_phone_mon != 'undefined' ? ee_phone_mon : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="tue" class="form-label mb-0">TUE</label>
+                    <input type="text" class="form-control" id="ee_phone_tue" name="ee_phone_tue" 
+                           value="<%= typeof ee_phone_tue != 'undefined' ? ee_phone_tue : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="wed" class="form-label mb-0">WED</label>
+                    <input type="text" class="form-control" id="ee_phone_wed" name="ee_phone_wed" 
+                           value="<%= typeof ee_phone_wed != 'undefined' ? ee_phone_wed : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="thu" class="form-label mb-0">THU</label>
+                    <input type="text" class="form-control" id="ee_phone_thu" name="ee_phone_thu" 
+                           value="<%= typeof ee_phone_thu != 'undefined' ? ee_phone_thu : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="fri" class="form-label mb-0">FRI</label>
+                    <input type="text" class="form-control" id="ee_phone_fri" name="ee_phone_fri" 
+                           value="<%= typeof ee_phone_fri != 'undefined' ? ee_phone_fri : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sat" class="form-label mb-0">SAT</label>
+                    <input type="text" class="form-control" id="ee_phone_sat" name="ee_phone_sat" 
+                           value="<%= typeof ee_phone_sat != 'undefined' ? ee_phone_sat : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="subtotal" class="form-label mb-0">SUBTOTAL</label>
+                    <input type="text" class="form-control" id="ee_phone_subtotal" name="ee_phone_subtotal" 
+                           value="<%= typeof ee_phone_subtotal != 'undefined' ? ee_phone_subtotal : '' %>">
+                </div>
+                
+            </div> <!-- end of row -->
+ 
+            <!-- Row: -->
+            <div class="row justify-content-start align-items-center mt-1">
+
+                <!-- Col: -->
+                <div class="col-lg-3">
+
+                    <label for="expense" class="form-label">
+                        <i class="bi bi-bus-front-fill"></i>
+                        BUS/RAIL FARE
+                    </label>
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sun" class="form-label d-lg-none mb-0">SUN</label>
+                    <input type="text" class="form-control" id="ee_bus_sun" name="ee_bus_sun" 
+                           value="<%= typeof ee_bus_sun != 'undefined' ? ee_bus_sun : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="mon" class="form-label d-lg-none mb-0">MON</label>
+                    <input type="text" class="form-control" id="ee_bus_mon" name="ee_bus_mon" 
+                           value="<%= typeof ee_bus_mon != 'undefined' ? ee_bus_mon : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="tue" class="form-label d-lg-none mb-0">TUE</label>
+                    <input type="text" class="form-control" id="ee_bus_tue" name="ee_bus_tue" 
+                           value="<%= typeof ee_bus_tue != 'undefined' ? ee_bus_tue : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="wed" class="form-label d-lg-none mb-0">WED</label>
+                    <input type="text" class="form-control" id="ee_bus_wed" name="ee_bus_wed" 
+                           value="<%= typeof ee_bus_wed != 'undefined' ? ee_bus_wed: '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="thu" class="form-label d-lg-none mb-0">THU</label>
+                    <input type="text" class="form-control" id="ee_bus_thu" name="ee_bus_thu" 
+                           value="<%= typeof ee_bus_thu != 'undefined' ? ee_bus_thu : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="fri" class="form-label d-lg-none mb-0">FRI</label>
+                    <input type="text" class="form-control" id="ee_bus_fri" name="ee_bus_fri" 
+                           value="<%= typeof ee_bus_fri != 'undefined' ? ee_bus_fri : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sat" class="form-label d-lg-none mb-0">SAT</label>
+                    <input type="text" class="form-control" id="ee_bus_sat" name="ee_bus_sat" 
+                           value="<%= typeof ee_bus_sat != 'undefined' ? ee_bus_sat : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="subtotal" class="form-label d-lg-none mb-0">SUBTOTAL</label>
+                    <input type="text" class="form-control" id="ee_bus_subtotal" name="ee_bus_subtotal" 
+                           value="<%= typeof ee_bus_subtotal != 'undefined' ? ee_bus_subtotal : '' %>">
+                </div>
+                
+            </div> <!-- end of row -->
+
+            <!-- Row: -->
+            <div class="row justify-content-start align-items-center mt-1">
+
+                <!-- Col: -->
+                <div class="col-lg-3">
+                    <!-- <div class="form-label d-none mb-0">EXPENSE</div> -->
+                    <label for="expense" class="form-label">
+                        <i class="bi bi-wrench-adjustable"></i>
+                        TOOLS
+                    </label>
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sun" class="form-label d-lg-none mb-0">SUN</label>
+                    <input type="text" class="form-control" id="ee_tools_sun" name="ee_tools_sun" 
+                           value="<%= typeof ee_tools_sun != 'undefined' ? ee_tools_sun : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="mon" class="form-label d-lg-none mb-0">MON</label>
+                    <input type="text" class="form-control" id="ee_tools_mon" name="ee_tools_mon" 
+                           value="<%= typeof ee_tools_mon != 'undefined' ? ee_tools_mon : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="tue" class="form-label d-lg-none mb-0">TUE</label>
+                    <input type="text" class="form-control" id="ee_tools_tue" name="ee_tools_tue" 
+                           value="<%= typeof ee_tools_tue != 'undefined' ? ee_tools_tue : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="wed" class="form-label d-lg-none mb-0">WED</label>
+                    <input type="text" class="form-control" id="ee_tools_wed" name="ee_tools_wed" 
+                           value="<%= typeof ee_tools_wed != 'undefined' ? ee_tools_wed : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="thu" class="form-label d-lg-none mb-0">THU</label>
+                    <input type="text" class="form-control" id="ee_tools_thu" name="ee_tools_thu" 
+                           value="<%= typeof ee_tools_thu != 'undefined' ? ee_tools_thu : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="fri" class="form-label d-lg-none mb-0">FRI</label>
+                    <input type="text" class="form-control" id="ee_tools_fri" name="ee_tools_fri" 
+                           value="<%= typeof ee_tools_fri != 'undefined' ? ee_tools_fri : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sat" class="form-label d-lg-none mb-0">SAT</label>
+                    <input type="text" class="form-control" id="ee_tools_sat" name="ee_tools_sat" 
+                           value="<%= typeof ee_tools_sat != 'undefined' ? ee_tools_sat : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="subtotal" class="form-label d-lg-none mb-0">SUBTOTAL</label>
+                    <input type="text" class="form-control" id="ee_tools_subtotal" name="ee_tools_subtotal" 
+                           value="<%= typeof ee_tools_subtotal != 'undefined' ? ee_tools_subtotal : '' %>">
+                </div>
+
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </section>
+
+
+    <!-- company-paid expenses -->
+    <section>
+        <div class="container-lg border rounded-border">
+            <div class="lead text-black fw-bold">COMPANY-PAID EXPENSES</div>
+    
+            <!-- Row: -->
+            <div class="row justify-content-start align-items-center mt-1">
+
+                <!-- Col: -->
+                <div class="col-lg-3">
+                    <div>&nbsp;</div>
+                    <label for="expense" class="form-label">
+                        <i class="bi bi-car-front-fill"></i>
+                        CAR RENTAL
+                    </label>
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sun" class="form-label mb-0">SUN</label>
+                    <input type="text" class="form-control" id="com_rental_sun" name="com_rental_sun" 
+                           value="<%= typeof com_rental_sun != 'undefined' ? com_rental_sun : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="mon" class="form-label mb-0">MON</label>
+                    <input type="text" class="form-control" id="com_rental_mon" name="com_rental_mon" 
+                           value="<%= typeof com_rental_mon != 'undefined' ? com_rental_mon : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="tue" class="form-label mb-0">TUE</label>
+                    <input type="text" class="form-control" id="com_rental_tue" name="com_rental_tue" 
+                           value="<%= typeof com_rental_tue != 'undefined' ? com_rental_tue : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="wed" class="form-label mb-0">WED</label>
+                    <input type="text" class="form-control" id="com_rental_wed" name="com_rental_wed" 
+                           value="<%= typeof com_rental_wed != 'undefined' ? com_rental_wed : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="thu" class="form-label mb-0">THU</label>
+                    <input type="text" class="form-control" id="com_rental_thu" name="com_rental_thu" 
+                           value="<%= typeof com_rental_thu != 'undefined' ? com_rental_thu : '' %>">
+                </div>
+                <div class="col-lg-1">
+                    <label for="fri" class="form-label mb-0">FRI</label>
+                    <input type="text" class="form-control" id="com_rental_fri" name="com_rental_fri" 
+                           value="<%= typeof com_rental_fri != 'undefined' ? com_rental_fri : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sat" class="form-label mb-0">SAT</label>
+                    <input type="text" class="form-control" id="com_rental_sat" name="com_rental_sat" 
+                           value="<%= typeof com_rental_sat != 'undefined' ? com_rental_sat : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="subtotal" class="form-label mb-0">SUBTOTAL</label>
+                    <input type="text" class="form-control" id="com_rental_subtotal" name="com_rental_subtotal" 
+                           value="<%= typeof com_rental_subtotal != 'undefined' ? com_rental_subtotal : '' %>">
+                </div>
+                
+            </div> <!-- end of row -->
+
+            <!-- Row: -->
+            <div class="row justify-content-start align-items-center mt-1">
+
+                <!-- Col: -->
+                <div class="col-lg-3">
+                    <label for="expense" class="form-label">
+                        <i class="bi bi-reception-4"></i>
+                        PHONE
+                    </label>
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sun" class="form-label d-lg-none mb-0">SUN</label>
+                    <input type="text" class="form-control" id="com_phone_sun" name="com_phone_sun" 
+                           value="<%= typeof com_phone_sun != 'undefined' ? com_phone_sun : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="mon" class="form-label d-lg-none mb-0">MON</label>
+                    <input type="text" class="form-control" id="com_phone_mon" name="com_phone_mon" 
+                           value="<%= typeof com_phone_mon != 'undefined' ? com_phone_mon : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="tue" class="form-label d-lg-none mb-0">TUE</label>
+                    <input type="text" class="form-control" id="com_phone_tue" name="com_phone_tue" 
+                           value="<%= typeof com_phone_tue != 'undefined' ? com_phone_tue : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="wed" class="form-label d-lg-none mb-0">WED</label>
+                    <input type="text" class="form-control" id="com_phone_wed" name="com_phone_wed" 
+                           value="<%= typeof com_phone_wed != 'undefined' ? com_phone_wed : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="thu" class="form-label d-lg-none mb-0">THU</label>
+                    <input type="text" class="form-control" id="com_phone_thu" name="com_phone_thu" 
+                           value="<%= typeof com_phone_thu != 'undefined' ? com_phone_thu : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="fri" class="form-label d-lg-none mb-0">FRI</label>
+                    <input type="text" class="form-control" id="com_phone_fri" name="com_phone_fri" 
+                           value="<%= typeof com_phone_fri != 'undefined' ? com_phone_fri : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sat" class="form-label d-lg-none mb-0">SAT</label>
+                    <input type="text" class="form-control" id="com_phone_sat" name="com_phone_sat" 
+                           value="<%= typeof com_phone_sat != 'undefined' ? com_phone_sat : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="subtotal" class="form-label d-lg-none mb-0">SUBTOTAL</label>
+                    <input type="text" class="form-control" id="com_phone_subtotal" name="com_phone_subtotal" 
+                           value="<%= typeof com_phone_subtotal != 'undefined' ? com_phone_subtotal : '' %>">
+                </div>
+
+            </div> <!-- end of row -->
+
+            <!-- Row: -->
+            <div class="row justify-content-start align-items-center mt-1">
+
+                <!-- Col: -->
+                <div class="col-lg-3">
+                    <label for="expense" class="form-label">
+                        <i class="bi bi-airplane-fill"></i>
+                        PLANE
+                    </label>
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sun" class="form-label d-lg-none mb-0">SUN</label>
+                    <input type="text" class="form-control" id="com_plane_sun" name="com_plane_sun" 
+                           value="<%= typeof com_plane_sun != 'undefined' ? com_plane_sun : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="mon" class="form-label d-lg-none mb-0">MON</label>
+                    <input type="text" class="form-control" id="com_plane_mon" name="com_plane_mon" 
+                           value="<%= typeof com_plane_mon != 'undefined' ? com_plane_mon : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="tue" class="form-label d-lg-none mb-0">TUE</label>
+                    <input type="text" class="form-control" id="com_plane_tue" name="com_plane_tue" 
+                           value="<%= typeof com_plane_tue != 'undefined' ? com_plane_tue : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="wed" class="form-label d-lg-none mb-0">WED</label>
+                    <input type="text" class="form-control" id="com_plane_wed" name="com_plane_wed" 
+                           value="<%= typeof com_plane_wed != 'undefined' ? com_plane_wed : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="thu" class="form-label d-lg-none mb-0">THU</label>
+                    <input type="text" class="form-control" id="com_plane_thu" name="com_plane_thu" 
+                           value="<%= typeof com_plane_thu != 'undefined' ? com_plane_thu : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="fri" class="form-label d-lg-none mb-0">FRI</label>
+                    <input type="text" class="form-control" id="com_plane_fri" name="com_plane_fri" 
+                           value="<%= typeof com_plane_fri != 'undefined' ? com_plane_fri : '' %>">
+                </div>
+
+                <div class="col-lg-1">
+                    <label for="sat" class="form-label d-lg-none mb-0">SAT</label>
+                    <input type="text" class="form-control" id="com_plane_sat" name="com_plane_sat" 
+                        value="<%= typeof com_plane_sat != 'undefined' ? com_plane_sat : '' %>">
+                </div>
+
+                <div class="col-lg-2">
+                    <label for="subtotal" class="form-label d-lg-none mb-0">SUBTOTAL</label>
+                    <input type="text" class="form-control" id="com_plane_subtotal" name="com_plane_subtotal" 
+                           value="<%= typeof com_plane_subtotal != 'undefined' ? com_plane_subtotal: '' %>">
+                </div>
+                
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </section>
+
+
+    <!-- other expenses -->
+    <section>
+        <div class="container-lg border rounded-border">
+
+            <div class="lead text-black fw-bold">
+                <!-- <i class="bi bi-credit-card-2-back-fill"></i> -->
+                OTHER EXPENSES
+            </div>
+
+            <div class="row justify-content-start align-items-center">
+                <div class="col-lg-12">
+                    <textarea id="other_expenses" class="form-control" name="other_expenses"><%= typeof other_expenses != 'undefined' ? other_expenses: '' %></textarea>
+                </div>
+            </div> <!-- end of row -->
+
+            <div class="row justify-content-start align-items-center">
+                <label for="confirmation"> 
+                    <input type="checkbox" class="form-checkbox me-1" id="confirmed" name="confirmed" 
+                    <%= typeof confirmed != 'undefined' ? 'checked' : '' %>>
+                    I hereby certify that the above expenditures represent cash spent for legitimate business only
+                </label>
+            </div> <!-- end of row -->
+        </div> <!-- end of container -->
+    </section>
+
+
+    <!-- grand totals -->
+    <section>
+        <div class="container-lg border rounded-border">
+
+            <div class="row justify-content-end align-items-center">
+                <div class="col-lg-3">
+                    <label for="total_expenses" class="lead text-black fw-bold">TOTAL EXPENSES
+                        <input type="text" id="total_expenses" name="total_expenses" class="form-control" 
+                               value="<%= typeof total_expenses != 'undefined' ? total_expenses: '' %>">
+                    </label>
+                </div>
+            </div>  <!-- end of row -->
+
+            <div class="row justify-content-end align-items-center mb-1">
+                <div class="col-lg-3">
+                    <label for="company_paid" class="lead text-black fw-bold">COMPANY PAID
+                          <input type="text" id="company_paid" name="company_paid" class="form-control" 
+                                 value="<%= typeof company_paid != 'undefined' ? company_paid: '' %>">
+                    </label>
+                </div>
+            </div> <!-- end of row-->
+
+            <div class="row justify-content-end align-items-center mb-1">
+                <div class="col-lg-3">
+                    <label for="due_employee" class="lead text-black fw-bold">DUE EMPLOYEE
+                          <input type="text" id="due_employee" name="due_employee" class="form-control" 
+                                 value="<%= typeof due_employee != 'undefined' ? due_employee : '' %>">
+                    </label>
+                </div>
+            </div> <!-- end of row-->
+        </div> <!-- end of container -->
+    </section>
+  
+    <section>
+        <div class="container">
+            <div class="row justify-content-start align-items-center mt-0">
+                <div class="col">
+                    <div class="form-group">
+                        <button type="submit" 
+                                class="btn btn-lg btn-altbrown btn-block fw-bold">
+                                Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> 
+
+    </form>
+ 
+    <script>
+
+        // fetch() returns a promise. When received a response from the server, 
+        // the promise's `then()` handler is called with the response.
+        // if the response succeeded, our handler fetches the response as json
+        // by calling response.json(), and immediately returns the promise that
+        // is returned by `response.json()`.
+
+        const pencils = document.querySelectorAll('#pencil');
+        const trashcans = document.querySelectorAll('#trashcan');
+
+        for (let i = 0; i < pencils.length; i++){
+
+            // click event handlers for the edit button ( for showing selected record on screen )
+            pencils[i].addEventListener('click', function(e){
+
+                const endpoint = `/modify/search_expense/${this.dataset.doc}`;   // custom data on edit/delete button
+                fetch(endpoint, {method: "PUT"})  // this will return a promise
+                .then((response)=>{ // must use 'return'
+                    return response.json();  // convert to js object; response.json() will also return a promise
+                })
+                .then((data)=>{
+                    assignValues(data); // assign the data that is returned from the fetch to form fields
+                })
+                .catch((err)=>{
+                    console.log(err);
+                });
+            });
+
+            // click event handlers for the delete button
+            trashcans[i].addEventListener('click', function(e){
+
+                const endpoint = `/modify/search_expense/${this.dataset.doc}`;   // custom data on edit/delete button
+                fetch(endpoint, { method: "DELETE"})
+                .then((response)=>{ 
+                    return response.json();  
+                })
+                .then((data)=>{
+                    window.location.reload();
+                })
+                .catch((err)=>{
+                    console.log(err);
+                });
+            });
+
+        } // end of for loop
+
+
+        function assignValues(data){
+
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+              
+                // These options are needed to round to whole numbers if that's what you want.
+                // minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+                // maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+            });
+            
+            document.getElementById('_id').value = data._id;
+            document.getElementById('employee_name').value = data.employee_name;
+            document.getElementById('badge').value = data.badge;
+
+            document.getElementById('sun_date').value = data.sun_date;
+            document.getElementById('sun_location').value = data.sun_location;
+            document.getElementById('mon_date').value = data.mon_date;
+            document.getElementById('mon_location').value = data.mon_location;
+            document.getElementById('tue_date').value = data.tue_date;
+            document.getElementById('tue_location').value = data.tue_location;
+            document.getElementById('wed_date').value = data.wed_date;
+            document.getElementById('wed_location').value = data.wed_location;
+            document.getElementById('thu_date').value = data.thu_date;
+            document.getElementById('thu_location').value = data.thu_location;
+            document.getElementById('fri_date').value = data.fri_date;
+            document.getElementById('fri_location').value = data.fri_location;
+            document.getElementById('sat_date').value = data.sat_date;
+            document.getElementById('sat_location').value = data.sat_location;
+
+            document.getElementById('ee_phone_sun').value = data.ee_phone_sun;
+            document.getElementById('ee_phone_mon').value = data.ee_phone_mon;
+            document.getElementById('ee_phone_tue').value = data.ee_phone_tue;
+            document.getElementById('ee_phone_wed').value = data.ee_phone_wed;
+            document.getElementById('ee_phone_thu').value = data.ee_phone_thu;
+            document.getElementById('ee_phone_fri').value = data.ee_phone_fri;
+            document.getElementById('ee_phone_sat').value = data.ee_phone_sat;
+            document.getElementById('ee_phone_subtotal').value = data.ee_phone_subtotal;
+
+            document.getElementById('ee_bus_sun').value = data.ee_bus_sun;
+            document.getElementById('ee_bus_mon').value = data.ee_bus_mon;
+            document.getElementById('ee_bus_tue').value = data.ee_bus_tue;
+            document.getElementById('ee_bus_wed').value = data.ee_bus_wed;
+            document.getElementById('ee_bus_thu').value = data.ee_bus_thu;
+            document.getElementById('ee_bus_fri').value = data.ee_bus_fri;
+            document.getElementById('ee_bus_sat').value = data.ee_bus_sat;
+            document.getElementById('ee_bus_subtotal').value = data.ee_bus_subtotal;
+
+            document.getElementById('ee_tools_sun').value = data.ee_tools_sun;
+            document.getElementById('ee_tools_mon').value = data.ee_tools_mon;
+            document.getElementById('ee_tools_tue').value = data.ee_tools_tue;
+            document.getElementById('ee_tools_wed').value = data.ee_tools_wed;
+            document.getElementById('ee_tools_thu').value = data.ee_tools_thu;
+            document.getElementById('ee_tools_fri').value = data.ee_tools_fri;
+            document.getElementById('ee_tools_sat').value = data.ee_tools_sat;
+            document.getElementById('ee_tools_subtotal').value = data.ee_tools_subtotal;
+
+            document.getElementById('com_rental_sun').value = data.com_rental_sun;
+            document.getElementById('com_rental_mon').value = data.com_rental_mon;
+            document.getElementById('com_rental_tue').value = data.com_rental_tue;
+            document.getElementById('com_rental_wed').value = data.com_rental_wed;
+            document.getElementById('com_rental_thu').value = data.com_rental_thu;
+            document.getElementById('com_rental_fri').value = data.com_rental_fri;
+            document.getElementById('com_rental_sat').value = data.com_rental_sat;
+            document.getElementById('com_rental_subtotal').value = data.com_rental_subtotal;
+            
+            document.getElementById('com_phone_sun').value = data.com_phone_sun;
+            document.getElementById('com_phone_mon').value = data.com_phone_mon;
+            document.getElementById('com_phone_tue').value = data.com_phone_tue;
+            document.getElementById('com_phone_wed').value = data.com_phone_wed;
+            document.getElementById('com_phone_thu').value = data.com_phone_thu;
+            document.getElementById('com_phone_fri').value = data.com_phone_fri;
+            document.getElementById('com_phone_sat').value = data.com_phone_sat;
+            document.getElementById('com_phone_subtotal').value = data.com_phone_subtotal;
+                      
+            document.getElementById('com_plane_sun').value = data.com_plane_sun;
+            document.getElementById('com_plane_mon').value = data.com_plane_mon;
+            document.getElementById('com_plane_tue').value = data.com_plane_tue;
+            document.getElementById('com_plane_wed').value = data.com_plane_wed;
+            document.getElementById('com_plane_thu').value = data.com_plane_thu;
+            document.getElementById('com_plane_fri').value = data.com_plane_fri;
+            document.getElementById('com_plane_sat').value = data.com_plane_sat;
+            document.getElementById('com_plane_subtotal').value = data.com_plane_subtotal;
+
+            document.getElementById('other_expenses').value = data.other_expenses; 
+
+            if(data.confirmed) 
+                document.getElementById('confirmed').checked = true;
+            else
+                document.getElementById('confirmed').checked = false;
+
+            document.getElementById('total_expenses').value = formatter.format(data.total_expenses); 
+            document.getElementById('company_paid').value = formatter.format(data.company_paid); 
+            document.getElementById('due_employee').value = formatter.format(data.due_employee); 
+
+        } // end of function
+
+    </script>
+</body>
+</html>

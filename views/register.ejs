@@ -1,0 +1,60 @@
+<!-- register page -->
+<div class="container">
+  <div class="row mt-5 justify-content-center align-items-center">
+      <div class="col-md-6">
+
+        <!-- card body -->
+        <div class="card card-body">
+
+          <!-- header -->
+          <h3 class="fw-bold text-center my-3">
+              <i class="fa fa-user-plus" aria-hidden="true"></i>
+              Register
+          </h3>
+
+          <!-- error messages if any -->
+          <%- include('./partials/messages') %>
+
+          <!-- form -->
+          <form action="/register" method="POST">
+
+            <div class="form-group">
+              <label for="name" class="form-label">Name</label>
+              <input type="name" id="name" name="name" class="form-control"
+                    value="<%= typeof name != 'undefined' ? name : '' %>"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input type="email" id="email" name="email" class="form-control"
+                    value="<%= typeof email != 'undefined' ? email : '' %>"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" id="password" name="password" class="form-control"
+                    value="<%= typeof password != 'undefined' ? password : '' %>"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="password2" class="form-label">Confirm Password</label>
+              <input type="password" id="password2" name="password2" class="form-control"
+                    value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
+              />
+            </div>
+     
+            <button type="submit" class="btn btn-altbrown btn-block mt-2" style="width: 100%;">Register</button>
+
+          </form>
+
+          <p class="mt-2 text-center">Have an Account? <a href="/login">Login</a></p>
+
+        </div> <!-- end of card -->
+
+      </div> <!-- end of col -->
+    </div> <!-- end of row -->
+</div> <!-- end of container -->
+  

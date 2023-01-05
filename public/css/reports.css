@@ -1,0 +1,15 @@
+section {
+    padding: 3px 0;
+}
+
+img {
+    width: 50px;
+}
+
+.container,
+.container-lg,
+.container-xxl {
+    padding: 12px 15px;
+    background-color: white;
+    border-radius: 0.5rem;
+}

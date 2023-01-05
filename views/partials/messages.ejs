@@ -1,0 +1,33 @@
+
+<!-- Using Bootstrap -> Components -> Alert -> Dismissing for Displaying Error Messages -->
+<!-- Require Both Bootstrap and Popper in layout.ejs -->
+<!-- Without Popper, Alert Won't Close -->
+
+<% if (typeof errors != 'undefined'){ %>
+
+    <!-- error is an object with msg property -->
+    <% errors.forEach(function(error){ %>
+
+    <!-- alert-warning will be showing error messages in yellow color -->
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <%= error.msg %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+ 
+    <% }); %>
+<% } %>
+
+<!-- Show Messages After Redirect Using Connect-Flash Middleware -->
+<% if (success != ''){ %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>    
+<% } %>
+
+<% if (error != ''){ %>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>    
+<% } %>

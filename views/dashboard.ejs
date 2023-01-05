@@ -1,0 +1,69 @@
+<%- include('./partials/navbar') %>
+
+<!-- accordions -->
+<section id="topics">
+    <div class="container-lg">
+
+        <div class="lead">
+            <h5 class="fst-italic ps-4">Auto Care Tips</h5>
+        </div>
+
+        <div class="accordion" id="accordionExample">
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button bg-altbrown text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                  <i class="fa fa-tint pe-2" aria-hidden="true"></i>
+                     Lubrication System
+                </button>
+              </h2>
+              <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div><strong>Overfilling Oil</strong></div>
+                    Engine oil contains detergents to help clean particles and other materials in the engine. 
+                    If you overfill your engine oil, you will get air bubbles. Air does not have much of a lubricating ability. 
+                    Adding too much oil can increase oil pressure causing failure to various seals and gaskets.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed bg-altbrown text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <i class="fa fa-thermometer-full pe-2" aria-hidden="true"></i>
+                     Cooling System
+                </button>
+              </h2>
+              <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <div><strong>Engine Overheating</strong></div> 
+                  Engine warning light comes on when your engine has reached a potentially damaging temperature.
+                  Overheating an engine can warp and crack cylinder heads, overheat the engine oil, and cause excessive stress on engine components. 
+                  If the temperature light stays on, pull over to the side of the road and let the engine cool.
+                </div>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed bg-altbrown text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <i class="fa fa-car pe-2" aria-hidden="true"></i>
+                       Suspension and Steering System
+                </button>
+              </h2>
+              <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <div><strong>Buying Tires</strong></div>
+                  All passenger vehicle tires will have UTQG ( uniform tire quality grading) ratings 
+                  that have been established by the US Department of Transportation. 
+                  These have been established to help the consumer compare tire brands and types. 
+                  The three UTQG ratings are treadwear, traction, and temperature.
+                  The treadwear rating is based on the wear rate of the tire. 
+                  Traction rating represents a tire's ability to grip traction. 
+                  The temperature rating represents a tire's ability to resist high temperature.
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+</section>
