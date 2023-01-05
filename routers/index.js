@@ -125,6 +125,8 @@ router.post('/register', (req, res)=>{
                  
             } // end of else
 
+        }).catch((err)=>{
+            console.log(err);
         }); // end of then
     }
 });
